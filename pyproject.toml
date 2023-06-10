@@ -22,7 +22,6 @@ dependencies = [
     "natsort",
     "numpy",
     "pyyaml",
-    "open3d",
     "opencv-python",
     "plotly>=4.10",
     "tqdm",

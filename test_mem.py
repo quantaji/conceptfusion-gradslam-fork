@@ -78,7 +78,7 @@ def gradslam_fusion(args: ProgramArgs):
         torch.cuda.empty_cache()
         color, depth, intrinsics, pose, *_ = dataset[idx]
 
-        dense_feats = f.normalize(torch.randn(size=(args.feature_height, args.feature_width, 512), device=args.fusion_device), dim=-1)  # just fusing random features
+        dense_feats = f.normalize(torch.randn(size=(args.feature_height, args.feature_width, 512), device=args.fusion_device, dtype=torch.half), dim=-1)  # just fusing random features
         frame_cur = RGBDImages(
             color.unsqueeze(0).unsqueeze(0),
             depth.unsqueeze(0).unsqueeze(0),
@@ -87,6 +87,9 @@ def gradslam_fusion(args: ProgramArgs):
             embeddings=dense_feats.unsqueeze(0).unsqueeze(0),
         )
         pointclouds, _ = slam.step(pointclouds, frame_cur, frame_prev, inplace=True)
+
+        a, b = torch.cuda.mem_get_info()
+        print('memory: ', a / (1024**2), b / (1024**2))
 
 
 if __name__ == "__main__":

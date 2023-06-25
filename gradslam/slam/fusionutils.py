@@ -505,8 +505,8 @@ def fuse_with_map(
                 map_ccounts_embedding = pointclouds.confidences_padded[pc2im_bnhw[:, 0], pc2im_bnhw[:, 1]]
                 updated_ccounts_embedding = (map_ccounts_embedding + frame_confidences * valid_embeddings_mask)
 
-                pointclouds.embeddings_padded[pc2im_bnhw[:, 0], pc2im_bnhw[:, 1]] *= map_ccounts_embedding / updated_ccounts_embedding
-                pointclouds.embeddings_padded[pc2im_bnhw[:, 0], pc2im_bnhw[:, 1]] += frame_confidences * frame_embeddings * valid_embeddings_mask / updated_ccounts_embedding
+                pointclouds.embeddings_padded[pc2im_bnhw[:, 0], pc2im_bnhw[:, 1]] *= (map_ccounts_embedding / updated_ccounts_embedding).to(pointclouds.embeddings_padded)
+                pointclouds.embeddings_padded[pc2im_bnhw[:, 0], pc2im_bnhw[:, 1]] += (frame_confidences * frame_embeddings * valid_embeddings_mask / updated_ccounts_embedding).to(pointclouds.embeddings_padded)
 
                 pointclouds.confidences_padded[pc2im_bnhw[:, 0], pc2im_bnhw[:, 1]] = updated_ccounts_embedding
 

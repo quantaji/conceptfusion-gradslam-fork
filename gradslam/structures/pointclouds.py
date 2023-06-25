@@ -1270,8 +1270,13 @@ class Pointclouds(object):
 
         # KM
         if self.has_embeddings:
-            self._embeddings_list = [torch.cat([self.embeddings_list[b], pointclouds.embeddings_list[b]], 0) for b in range(self._B)]
-            self._embeddings_padded = None
+            try:
+                self._embeddings_list = [torch.cat([self.embeddings_list[b], pointclouds.embeddings_list[b]], 0) for b in range(self._B)]
+                self._embeddings_padded = None
+            except:
+                self._embeddings_list = [torch.cat([self.embeddings_list[b].cpu(), pointclouds.embeddings_list[b].cpu()], 0) for b in range(self._B)]
+                self._embeddings_padded = None
+                self._embeddings_list = [t.to(self.device) for t in self._embeddings_list]
 
         if self.has_confidences:
             self._confidences_list = [torch.cat([self.confidences_list[b], pointclouds.confidences_list[b]], 0) for b in range(self._B)]
